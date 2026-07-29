@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-ink-600;
+  }
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-ink-900 text-parchment-100 font-body antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  ::selection {
+    @apply bg-gold-500/30 text-parchment-50;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2A3236;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3A4449;
+  }
+  h1, h2, h3 {
+    @apply font-display;
+  }
+  :focus-visible {
+    outline: 2px solid #D4A657;
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-ink-800 border border-ink-600 rounded-xl2 shadow-card;
+  }
+  .card-hover {
+    @apply transition-all duration-300 hover:border-ink-500 hover:-translate-y-0.5;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-medium text-sm transition-all duration-200 active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-primary {
+    @apply btn bg-gold-500 text-ink-950 hover:bg-gold-400 shadow-glow;
+  }
+  .btn-secondary {
+    @apply btn bg-ink-700 text-parchment-100 border border-ink-600 hover:bg-ink-600;
+  }
+  .btn-ghost {
+    @apply btn bg-transparent text-parchment-300 hover:bg-ink-700 hover:text-parchment-100;
+  }
+  .input-field {
+    @apply w-full bg-ink-900 border border-ink-600 rounded-lg px-3.5 py-2.5 text-sm text-parchment-100 placeholder:text-ink-400 focus:border-gold-600 focus:ring-1 focus:ring-gold-600/40 transition-colors outline-none;
+  }
+  .label-text {
+    @apply block text-xs font-medium text-parchment-500 mb-1.5 tracking-wide uppercase;
+  }
+  .skeleton {
+    @apply bg-ink-700 rounded-lg relative overflow-hidden;
+    background-image: linear-gradient(90deg, rgba(255,255,255,0) 0, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0) 80px);
+    background-size: 500px 100%;
+    @apply animate-shimmer;
+  }
+}
+
+.fc {
+  --fc-border-color: #2A3236;
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: #171D21;
+  --fc-today-bg-color: rgba(212,166,87,0.08);
+  font-family: inherit;
+}
+.fc .fc-toolbar-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.35rem;
+  color: #ECE8DE;
+}
+.fc .fc-button {
+  background: #1E262B !important;
+  border: 1px solid #2A3236 !important;
+  color: #ECE8DE !important;
+  box-shadow: none !important;
+  text-transform: capitalize;
+}
+.fc .fc-button:hover {
+  background: #2A3236 !important;
+}
+.fc .fc-button-active {
+  background: #D4A657 !important;
+  color: #0F1417 !important;
+}
+.fc .fc-daygrid-day-number {
+  color: #C9C4B6;
+  font-size: 0.8rem;
+  padding: 6px;
+}
+.fc .fc-col-header-cell-cushion {
+  color: #8B9296;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 8px;
+}
+.fc-daygrid-day-frame {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.fc-daygrid-day-frame:hover {
+  background: rgba(255,255,255,0.02);
+}
+.fc-event {
+  border: none !important;
+  background: transparent !important;
+}
