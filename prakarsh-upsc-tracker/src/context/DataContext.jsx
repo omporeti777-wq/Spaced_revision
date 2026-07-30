@@ -1,4 +1,17 @@
-import { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useAuth } from "../auth/AuthContext";
+import {
+  pullStudySnapshot,
+  pushStudySnapshot,
+} from "../services/cloud/studySync";
 import { v4 as uuidv4 } from "uuid";
 import dayjs from "dayjs";
 import { readStorage, writeStorage, STORAGE_KEYS } from "../utils/storage";
@@ -22,6 +35,10 @@ import { getHabitAnalytics, isHabitScheduledOn } from "../utils/habitAnalytics";
 const DataContext = createContext(null);
 
 export function DataProvider({ children }) {
+  const { user, accessToken } = useAuth();
+  const [cloudLoaded, setCloudLoaded] = useState(false);
+  const uploadTimeoutRef = useRef(null);
+  const hasLoadedCloudRef = useRef(false);
   const [initialData] = useState(() => {
     const subjectRepository = createLocalSubjectRepository({
       read: readStorage,
@@ -90,6 +107,8 @@ export function DataProvider({ children }) {
     });
     habitRepository.saveLogs(habitLogs);
   }, [habitLogs]);
+
+
 
   // Live status (pending/overdue/completed) is derived every render off
   // the raw stored data, never stored directly, so it can't go stale.
@@ -271,9 +290,103 @@ export function DataProvider({ children }) {
   const updateSettings = useCallback((patch) => {
     setSettings((prev) => ({ ...prev, ...patch }));
   }, []);
+  const replaceAllData = useCallback((snapshot) => {
+  setSubjects(snapshot.subjects ?? []);
+  setLectures(snapshot.lectures ?? []);
+  setTasks(snapshot.tasks ?? []);
+  setHabits(snapshot.habits ?? []);
+  setHabitLogs(snapshot.habitLogs ?? []);
+  setSettings({
+  ...DEFAULT_SETTINGS,
+  ...(snapshot.settings || {}),
+});
+}, []);
+useEffect(() => {
+ 
 
+  if (!user || !accessToken) {
+    console.log("No user logged in");
+    return;
+  }
+
+  if (hasLoadedCloudRef.current) {
+  return;
+}
+hasLoadedCloudRef.current = true;
+   console.log("Cloud Sync Effect");
+  console.log("User ID:", user.id);
+
+  async function loadCloudData() {
+    try {
+      console.log("Downloading snapshot...");
+
+      const snapshot = await pullStudySnapshot({
+  accessToken,
+  userId: user.id,
+});
+
+replaceAllData(snapshot);
+setCloudLoaded(true);
+    } catch (err) {
+  console.error("Cloud Sync Error:", err);
+  setCloudLoaded(true);
+}
+  }
+
+  loadCloudData();
+}, [user, accessToken, replaceAllData]);
+  
   const streaks = useMemo(() => computeStreaks(liveTasks), [liveTasks]);
   const habitAnalytics = useMemo(() => getHabitAnalytics(habits, habitLogs), [habits, habitLogs]);
+
+  const snapshot = useMemo(() => ({
+  subjects,
+  lectures,
+  tasks: liveTasks,
+  habits,
+  habitLogs,
+  settings,
+}), [
+  subjects,
+  lectures,
+  liveTasks,
+  habits,
+  habitLogs,
+  settings,
+]);
+
+
+  useEffect(() => {
+  if (!cloudLoaded) return;
+  if (!user || !accessToken) return;
+
+  async function uploadSnapshot() {
+    try {
+      await pushStudySnapshot({
+        accessToken,
+        userId: user.id,
+        snapshot,
+      });
+
+      console.log("Cloud upload successful");
+    } catch (err) {
+      console.error("Cloud upload failed:", err);
+    }
+  }
+if (uploadTimeoutRef.current) {
+  clearTimeout(uploadTimeoutRef.current);
+}
+
+uploadTimeoutRef.current = setTimeout(() => {
+  uploadSnapshot();
+}, 1000);
+
+return () => {
+  if (uploadTimeoutRef.current) {
+    clearTimeout(uploadTimeoutRef.current);
+  }
+};
+}, [cloudLoaded, user, accessToken, snapshot]);
 
   const value = useMemo(
     () => ({
@@ -282,6 +395,14 @@ export function DataProvider({ children }) {
       settings,
       streaks,
       subjects,
+      snapshot: {
+      subjects,
+      lectures,
+      tasks,
+      habits,
+      habitLogs,
+      settings,
+    },
       addLecture,
       deleteLecture,
       toggleTask,
@@ -298,6 +419,7 @@ export function DataProvider({ children }) {
       deleteHabit,
       reorderHabits,
       toggleHabitLog,
+      replaceAllData,
     }),
     [lectures, liveTasks, settings, streaks, subjects, addLecture, deleteLecture, toggleTask, updateSettings, addSubject, updateSubject, deleteSubject, reorderSubjects, habits, habitLogs, habitAnalytics, addHabit, updateHabit, deleteHabit, reorderHabits, toggleHabitLog]
   );
