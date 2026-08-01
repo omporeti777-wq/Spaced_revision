@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import {
   FiHome, FiCheckSquare, FiCalendar, FiPlusCircle,
-  FiBookOpen, FiBarChart2, FiSettings, FiX, FiCheckCircle,
+  FiBookOpen, FiBarChart2, FiSettings, FiX, FiCheckCircle,FiClipboard,
 } from "react-icons/fi";
 
 const NAV_ITEMS = [
@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { to: "/add-lecture", label: "Add Lecture", icon: FiPlusCircle },
   { to: "/subjects", label: "Subjects", icon: FiBookOpen },
   { to: "/habits", label: "Habit Tracker", icon: FiCheckCircle },
+  { to: "/personal-tasks", label: "Personal Tasks", icon: FiClipboard },
   { to: "/statistics", label: "Statistics", icon: FiBarChart2 },
   { to: "/settings", label: "Settings", icon: FiSettings },
 ];

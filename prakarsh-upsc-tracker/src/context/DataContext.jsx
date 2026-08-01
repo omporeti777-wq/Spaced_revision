@@ -1,4 +1,8 @@
 import {
+  createPersonalTask,
+  updatePersonalTask,
+} from "../services/personalTaskRepository";
+import {
   createContext,
   useCallback,
   useContext,
@@ -52,9 +56,16 @@ export function DataProvider({ children }) {
     });
   });
   const [subjects, setSubjects] = useState(initialData.subjects);
-  const [lectures, setLectures] = useState(initialData.lectures);
-  const [tasks, setTasks] = useState(initialData.tasks);
-  const [settings, setSettings] = useState(() => readStorage(STORAGE_KEYS.settings, DEFAULT_SETTINGS));
+const [lectures, setLectures] = useState(initialData.lectures);
+const [tasks, setTasks] = useState(initialData.tasks);
+
+const [personalTasks, setPersonalTasks] = useState(() =>
+  readStorage(STORAGE_KEYS.personalTasks, [])
+);
+
+const [settings, setSettings] = useState(() =>
+  readStorage(STORAGE_KEYS.settings, DEFAULT_SETTINGS)
+);
   const [habitData] = useState(() => {
     const habitRepository = createLocalHabitRepository({
       read: readStorage,
@@ -290,10 +301,46 @@ export function DataProvider({ children }) {
   const updateSettings = useCallback((patch) => {
     setSettings((prev) => ({ ...prev, ...patch }));
   }, []);
+
+  const addPersonalTask = useCallback((input) => {
+  const task = createPersonalTask(input);
+  setPersonalTasks((prev) => [task, ...prev]);
+  return task;
+}, []);
+
+const editPersonalTask = useCallback((taskId, updates) => {
+  setPersonalTasks((prev) =>
+    prev.map((task) =>
+      task.id === taskId
+        ? updatePersonalTask(task, updates)
+        : task
+    )
+  );
+}, []);
+
+const deletePersonalTask = useCallback((taskId) => {
+  setPersonalTasks((prev) =>
+    prev.filter((task) => task.id !== taskId)
+  );
+}, []);
+
+const togglePersonalTask = useCallback((taskId) => {
+  setPersonalTasks((prev) =>
+    prev.map((task) =>
+      task.id === taskId
+        ? updatePersonalTask(task, {
+            completed: !task.completed,
+          })
+        : task
+    )
+  );
+}, []);
+
   const replaceAllData = useCallback((snapshot) => {
   setSubjects(snapshot.subjects ?? []);
   setLectures(snapshot.lectures ?? []);
   setTasks(snapshot.tasks ?? []);
+  setPersonalTasks(snapshot.personalTasks ?? []);
   setHabits(snapshot.habits ?? []);
   setHabitLogs(snapshot.habitLogs ?? []);
   setSettings({
@@ -389,38 +436,90 @@ return () => {
 }, [cloudLoaded, user, accessToken, snapshot]);
 
   const value = useMemo(
-    () => ({
-      lectures,
-      tasks: liveTasks,
-      settings,
-      streaks,
-      subjects,
-      snapshot: {
+  () => ({
+    lectures,
+
+    // This is the important line
+    tasks: liveTasks,
+
+    personalTasks,
+    settings,
+    streaks,
+    subjects,
+
+    snapshot: {
       subjects,
       lectures,
       tasks,
+      personalTasks,
       habits,
       habitLogs,
       settings,
     },
-      addLecture,
-      deleteLecture,
-      toggleTask,
-      updateSettings,
-      addSubject,
-      updateSubject,
-      deleteSubject,
-      reorderSubjects,
-      habits,
-      habitLogs,
-      habitAnalytics,
-      addHabit,
-      updateHabit,
-      deleteHabit,
-      reorderHabits,
-      toggleHabitLog,
-      replaceAllData,
-    }),
+
+    addLecture,
+    deleteLecture,
+    toggleTask,
+
+    addPersonalTask,
+    editPersonalTask,
+    deletePersonalTask,
+    togglePersonalTask,
+
+    updateSettings,
+    addSubject,
+    updateSubject,
+    deleteSubject,
+    reorderSubjects,
+
+    habits,
+    habitLogs,
+    habitAnalytics,
+
+    addHabit,
+    updateHabit,
+    deleteHabit,
+    reorderHabits,
+    toggleHabitLog,
+
+    replaceAllData,
+  }),
+  [
+    lectures,
+    liveTasks,
+    personalTasks,
+    settings,
+    streaks,
+    subjects,
+
+    addLecture,
+    deleteLecture,
+    toggleTask,
+
+    addPersonalTask,
+    editPersonalTask,
+    deletePersonalTask,
+    togglePersonalTask,
+
+    updateSettings,
+    addSubject,
+    updateSubject,
+    deleteSubject,
+    reorderSubjects,
+
+    habits,
+    habitLogs,
+    habitAnalytics,
+
+    addHabit,
+    updateHabit,
+    deleteHabit,
+    reorderHabits,
+    toggleHabitLog,
+
+    replaceAllData,
+  ]
+    
     [lectures, liveTasks, settings, streaks, subjects, addLecture, deleteLecture, toggleTask, updateSettings, addSubject, updateSubject, deleteSubject, reorderSubjects, habits, habitLogs, habitAnalytics, addHabit, updateHabit, deleteHabit, reorderHabits, toggleHabitLog]
   );
 

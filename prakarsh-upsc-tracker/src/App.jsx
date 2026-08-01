@@ -10,6 +10,7 @@ import SubjectDetail from "./pages/SubjectDetail";
 import Statistics from "./pages/Statistics";
 import Settings from "./pages/Settings";
 import HabitTracker from "./pages/HabitTracker";
+import PersonalTasks from "./pages/PersonalTasks";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProtectedRoute from "./auth/ProtectedRoute";
@@ -35,6 +36,7 @@ export default function App() {
     <Route path="/subjects" element={<Subjects />} />
     <Route path="/subjects/:subjectId" element={<SubjectDetail />} />
     <Route path="/habits" element={<HabitTracker />} />
+    <Route path="/personal-tasks" element={<PersonalTasks />} />
     <Route path="/statistics" element={<Statistics />} />
     <Route path="/settings" element={<Settings />} />
   </Route>

@@ -25,6 +25,7 @@ export function writeStorage(key, value) {
 export const STORAGE_KEYS = {
   lectures: "upsc-tracker:lectures",
   tasks: "upsc-tracker:tasks",
+  personalTasks: "upsc-tracker:personal-tasks",
   subjects: "upsc-tracker:subjects",
   habits: "upsc-tracker:habits",
   habitLogs: "upsc-tracker:habit-logs",
