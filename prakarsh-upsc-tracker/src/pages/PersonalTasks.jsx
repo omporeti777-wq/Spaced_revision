@@ -18,7 +18,7 @@ export default function PersonalTasks() {
   onNewTask={() => setShowForm((prev) => !prev)}
 />
 
-<TaskStats tasks={personalTasks} />
+
 
 <TaskFilters />
 
@@ -27,12 +27,14 @@ export default function PersonalTasks() {
       <hr className="border-gray-700" />
 
       <div>
-        <h2 className="text-xl font-semibold mb-4">
-          Your Tasks
-        </h2>
+  <h2 className="text-xl font-semibold mb-4">
+    Your Tasks
+  </h2>
 
-       <TaskList tasks={personalTasks} />
-      </div>
+  <TaskList
+    tasks={personalTasks.filter((task) => !task.completed)}
+  />
+</div>
 
     </div>
   );

@@ -326,16 +326,9 @@ const deletePersonalTask = useCallback((taskId) => {
 
 const togglePersonalTask = useCallback((taskId) => {
   setPersonalTasks((prev) =>
-    prev.map((task) =>
-      task.id === taskId
-        ? updatePersonalTask(task, {
-            completed: !task.completed,
-          })
-        : task
-    )
+    prev.filter((task) => task.id !== taskId)
   );
 }, []);
-
   const replaceAllData = useCallback((snapshot) => {
   setSubjects(snapshot.subjects ?? []);
   setLectures(snapshot.lectures ?? []);
@@ -403,6 +396,7 @@ setCloudLoaded(true);
   habitLogs,
   settings,
 ]);
+
 
 
   useEffect(() => {

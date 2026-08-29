@@ -112,9 +112,15 @@ export async function pullStudySnapshot({ accessToken, userId }) {
     subjects: mappedSubjects,
     lectures: mappedLectures,
     tasks: tasks.map(fromTask).map((task) => {
-      const lecture = mappedLectures.find((item) => item.id === task.lectureId);
-      return { ...task, subjectId: lecture?.subjectId, subject: lecture?.subject || "Other" };
-    }),
+  const lecture = mappedLectures.find((item) => item.id === task.lectureId);
+
+  return {
+    ...task,
+    subjectId: lecture?.subjectId,
+    subject: lecture?.subject || "Other",
+    lectureName: lecture?.lectureName || "Unknown Lecture",
+  };
+}),
     personalTasks: personalTasks.map(fromPersonalTask),
     habits: habits.map(fromHabit),
     habitLogs: habitLogs.map(fromHabitLog),

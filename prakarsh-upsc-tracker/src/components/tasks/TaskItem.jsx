@@ -79,23 +79,23 @@ export default function TaskItem({ task, showDate = false, compact = false }) {
       />
 
       <div className="flex-1 min-w-0">
-        <p
-          className={`text-sm font-medium truncate ${
-            task.completed ? "line-through" : ""
-          }`}
-        >
-          {task.lectureName}
-        </p>
+  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+    <SubjectBadge
+      subject={subject?.name || task.subject || "Deleted subject"}
+      color={subject?.color || "#8B9296"}
+    />
 
-        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-          <SubjectBadge
-            subject={subject?.name || task.subject || "Deleted subject"}
-            color={subject?.color || "#8B9296"}
-          />
+    <span
+      className={`text-sm font-medium ${
+        task.completed ? "line-through" : ""
+      }`}
+    >
+      {task.lectureName}
+    </span>
 
-          <span className="text-[11px] font-medium">
-            {task.label}
-          </span>
+    <span className="text-[11px] font-medium">
+      {task.label}
+    </span>
 
           {showDate && (
             <span className="text-[11px] font-mono">
