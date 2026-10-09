@@ -139,9 +139,15 @@ export default function TaskItem({ task, showDate = false, compact = false }) {
             {task.lectureName}
           </span>
 
-          <span className="text-[10px] font-mono font-bold text-gold-400 bg-gold-500/10 border border-gold-500/30 px-1.5 py-0.5 rounded-sm">
-            REV #{task.label}
-          </span>
+          {task.revisionNumber === 0 || task.label === "Learn" ? (
+            <span className="text-[10px] font-mono font-bold text-teal-300 bg-teal-500/15 border border-teal-500/40 px-2 py-0.5 rounded-sm shadow-[0_0_8px_rgba(0,240,255,0.15)] flex items-center gap-1">
+              <span>▶</span> WATCH VIDEO / STUDY
+            </span>
+          ) : (
+            <span className="text-[10px] font-mono font-bold text-gold-400 bg-gold-500/15 border border-gold-500/40 px-2 py-0.5 rounded-sm shadow-[0_0_8px_rgba(255,145,0,0.15)] flex items-center gap-1">
+              <span>🔄</span> REVISION {task.revisionNumber || task.label?.replace(/Revision\s*/i, "")}
+            </span>
+          )}
 
           {showDate && (
             <span className="text-[10px] font-mono text-parchment-400">

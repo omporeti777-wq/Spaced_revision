@@ -21,6 +21,7 @@ const NAV_ITEMS = [
   { to: "/today", label: "TODAY'S MISSION", sub: "Active Directives", icon: FiCheckSquare },
   { to: "/personal-tasks", label: "TACTICAL TASKS", sub: "Personal Targets", icon: FiClipboard },
   { to: "/calendar", label: "DEPLOYMENT CALENDAR", sub: "Timeline", icon: FiCalendar },
+  { to: "/diary", label: "FIELD DIARY", sub: "Mental Log & Notes", icon: FiBookOpen },
   { to: "/add-lecture", label: "LOG INTEL", sub: "Add Lecture", icon: FiPlusCircle },
   { to: "/subjects", label: "SECTOR SUBJECTS", sub: "Syllabus Areas", icon: FiBookOpen },
   { to: "/habits", label: "COMBAT DRILLS", sub: "Habit Tracker", icon: FiCheckCircle },

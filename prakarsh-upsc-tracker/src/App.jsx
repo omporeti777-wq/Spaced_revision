@@ -11,6 +11,7 @@ import Statistics from "./pages/Statistics";
 import Settings from "./pages/Settings";
 import HabitTracker from "./pages/HabitTracker";
 import PersonalTasks from "./pages/PersonalTasks";
+import Diary from "./pages/Diary";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProtectedRoute from "./auth/ProtectedRoute";
@@ -32,6 +33,7 @@ export default function App() {
     <Route path="/" element={<Dashboard />} />
     <Route path="/today" element={<TodayTasks />} />
     <Route path="/calendar" element={<CalendarPage />} />
+    <Route path="/diary" element={<Diary />} />
     <Route path="/add-lecture" element={<AddLecture />} />
     <Route path="/subjects" element={<Subjects />} />
     <Route path="/subjects/:subjectId" element={<SubjectDetail />} />

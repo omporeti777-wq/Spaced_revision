@@ -63,6 +63,10 @@ const [personalTasks, setPersonalTasks] = useState(() =>
   readStorage(STORAGE_KEYS.personalTasks, [])
 );
 
+const [diaryEntries, setDiaryEntries] = useState(() =>
+  readStorage(STORAGE_KEYS.diaryEntries, [])
+);
+
 const [settings, setSettings] = useState(() =>
   readStorage(STORAGE_KEYS.settings, DEFAULT_SETTINGS)
 );
@@ -112,6 +116,9 @@ const [settings, setSettings] = useState(() =>
   useEffect(() => {
     writeStorage(STORAGE_KEYS.personalTasks, personalTasks);
   }, [personalTasks]);
+  useEffect(() => {
+    writeStorage(STORAGE_KEYS.diaryEntries, diaryEntries);
+  }, [diaryEntries]);
   useEffect(() => {
     const habitRepository = createLocalHabitRepository({
       read: readStorage,
@@ -378,11 +385,47 @@ const togglePersonalTask = useCallback((taskId) => {
     )
   );
 }, []);
+
+const addDiaryEntry = useCallback((entryInput) => {
+  const newEntry = {
+    id: uuidv4(),
+    title: entryInput.title?.trim() || "Untitled Intel Log",
+    content: entryInput.content?.trim() || "",
+    mood: entryInput.mood || "focused", // "victorious" | "focused" | "neutral" | "fatigued" | "frustrated"
+    tags: Array.isArray(entryInput.tags) ? entryInput.tags : [],
+    studyHours: entryInput.studyHours || "",
+    date: entryInput.date || dayjs().format("YYYY-MM-DD"),
+    createdAt: dayjs().toISOString(),
+    updatedAt: dayjs().toISOString(),
+  };
+  setDiaryEntries((prev) => [newEntry, ...prev]);
+  return newEntry;
+}, []);
+
+const updateDiaryEntry = useCallback((entryId, updates) => {
+  setDiaryEntries((prev) =>
+    prev.map((item) =>
+      item.id === entryId
+        ? {
+            ...item,
+            ...updates,
+            updatedAt: dayjs().toISOString(),
+          }
+        : item
+    )
+  );
+}, []);
+
+const deleteDiaryEntry = useCallback((entryId) => {
+  setDiaryEntries((prev) => prev.filter((item) => item.id !== entryId));
+}, []);
+
   const replaceAllData = useCallback((snapshot) => {
   setSubjects(snapshot.subjects ?? []);
   setLectures(snapshot.lectures ?? []);
   setTasks(snapshot.tasks ?? []);
   setPersonalTasks(snapshot.personalTasks ?? []);
+  setDiaryEntries(snapshot.diaryEntries ?? []);
   setHabits(snapshot.habits ?? []);
   setHabitLogs(snapshot.habitLogs ?? []);
   setSettings({
@@ -433,6 +476,7 @@ setCloudLoaded(true);
   lectures,
   tasks: liveTasks,
   personalTasks,
+  diaryEntries,
   habits,
   habitLogs,
   settings,
@@ -441,6 +485,7 @@ setCloudLoaded(true);
   lectures,
   liveTasks,
   personalTasks,
+  diaryEntries,
   habits,
   habitLogs,
   settings,
@@ -488,6 +533,7 @@ return () => {
     tasks: liveTasks,
 
     personalTasks,
+    diaryEntries,
     settings,
     streaks,
     subjects,
@@ -497,6 +543,7 @@ return () => {
       lectures,
       tasks,
       personalTasks,
+      diaryEntries,
       habits,
       habitLogs,
       settings,
@@ -511,6 +558,10 @@ return () => {
     editPersonalTask,
     deletePersonalTask,
     togglePersonalTask,
+
+    addDiaryEntry,
+    updateDiaryEntry,
+    deleteDiaryEntry,
 
     updateSettings,
     addSubject,
@@ -535,6 +586,7 @@ return () => {
     liveTasks,
     tasks,
     personalTasks,
+    diaryEntries,
     settings,
     streaks,
     subjects,
@@ -548,6 +600,10 @@ return () => {
     editPersonalTask,
     deletePersonalTask,
     togglePersonalTask,
+
+    addDiaryEntry,
+    updateDiaryEntry,
+    deleteDiaryEntry,
 
     updateSettings,
     addSubject,

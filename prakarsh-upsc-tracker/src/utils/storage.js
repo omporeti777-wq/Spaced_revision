@@ -31,4 +31,5 @@ export const STORAGE_KEYS = {
   habitLogs: "upsc-tracker:habit-logs",
   settings: "upsc-tracker:settings",
   streak: "upsc-tracker:streak",
+  diaryEntries: "upsc-tracker:diary-entries",
 };

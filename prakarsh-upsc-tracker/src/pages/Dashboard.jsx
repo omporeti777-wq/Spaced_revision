@@ -464,6 +464,35 @@ export default function Dashboard() {
               </div>
             )}
           </Card>
+
+          {/* FIELD DIARY QUICK GLANCE */}
+          <Card className="p-5 hud-bracket border border-ink-600 bg-ink-900/90">
+            <div className="flex items-center justify-between pb-3 border-b border-ink-700 mb-3">
+              <div className="flex items-center gap-2">
+                <FiBookOpen className="text-gold-400" size={16} />
+                <h3 className="text-sm font-display font-bold text-parchment-100 uppercase tracking-widest">
+                  OPERATOR'S FIELD DIARY
+                </h3>
+              </div>
+              <Link
+                to="/diary"
+                className="text-[11px] font-mono text-gold-400 hover:text-gold-300 uppercase"
+              >
+                OPEN JOURNAL →
+              </Link>
+            </div>
+
+            <p className="text-xs font-mono text-parchment-400 leading-relaxed mb-3">
+              No daily requirement. Whenever you are in the mood or have reflections, log your thoughts, mindset, and study breakthroughs.
+            </p>
+
+            <Link to="/diary">
+              <button className="w-full py-2 px-3 rounded-sm bg-ink-800 hover:bg-gold-500 hover:text-ink-950 border border-ink-600 hover:border-gold-500 text-xs font-mono font-bold tracking-wider text-parchment-200 transition-all flex items-center justify-center gap-2">
+                <FiZap size={14} className="text-gold-400" />
+                <span>WRITE REFLECTION OR READ LOGS</span>
+              </button>
+            </Link>
+          </Card>
         </div>
       </div>
     </div>
