@@ -163,6 +163,43 @@ const [settings, setSettings] = useState(() =>
     [settings.intervals, subjects]
   );
 
+  const addLecturesBatch = useCallback(
+    (lecturesInputArray) => {
+      const newLectures = [];
+      const newTasks = [];
+
+      for (const input of lecturesInputArray) {
+        const subject = subjects.find((item) => item.id === input.subjectId);
+        if (!subject) continue;
+
+        const lecture = {
+          id: uuidv4(),
+          subjectId: subject.id,
+          subject: subject.name,
+          lectureName: input.lectureName || "Untitled Lecture",
+          course: input.course || "",
+          faculty: input.faculty || "",
+          completedDate: input.completedDate,
+          difficulty: input.difficulty || "Medium",
+          priority: input.priority || "Medium",
+          notes: input.notes || "",
+          createdAt: dayjs().toISOString(),
+          updatedAt: dayjs().toISOString(),
+        };
+
+        const tasksForThisLecture = buildTasksForLecture(lecture, settings.intervals);
+        newLectures.push(lecture);
+        newTasks.push(...tasksForThisLecture);
+      }
+
+      setLectures((prev) => [...newLectures, ...prev]);
+      setTasks((prev) => [...newTasks, ...prev]);
+
+      return newLectures;
+    },
+    [settings.intervals, subjects]
+  );
+
   const addSubject = useCallback((input) => {
     const name = String(input?.name || "").trim();
     if (subjects.some((subject) => subjectNameKey(subject.name) === subjectNameKey(name))) {
@@ -466,6 +503,7 @@ return () => {
     },
 
     addLecture,
+    addLecturesBatch,
     deleteLecture,
     toggleTask,
 
@@ -502,6 +540,7 @@ return () => {
     subjects,
 
     addLecture,
+    addLecturesBatch,
     deleteLecture,
     toggleTask,
 
