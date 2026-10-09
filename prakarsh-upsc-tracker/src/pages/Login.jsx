@@ -9,6 +9,7 @@ import {
   FaArrowRight
 } from "react-icons/fa";
 import { useAuth } from "../auth/AuthContext";
+import { isSupabaseAuthReady } from "../auth/supabase";
 import illustration from "../assets/login-illustration.png";
 import "./Login.css";
 
@@ -24,6 +25,13 @@ export default function Login() {
 
   async function handleLogin(e) {
     e.preventDefault();
+
+    if (!isSupabaseAuthReady) {
+      setError(
+        "Supabase credentials are not configured yet. Please add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to your environment variables."
+      );
+      return;
+    }
 
     setLoading(true);
     setError("");

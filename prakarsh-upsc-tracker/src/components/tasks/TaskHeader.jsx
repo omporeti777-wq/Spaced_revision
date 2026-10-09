@@ -1,24 +1,31 @@
-export default function TaskHeader({ onNewTask }) {
+import { FiPlus } from "react-icons/fi";
+import Button from "../ui/Button";
+
+export default function TaskHeader({ onNewTask, showForm }) {
   return (
-    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
-
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 rounded-sm border border-gold-500/40 bg-ink-900/90 shadow-glow animate-fadeUp">
       <div>
-        <h1 className="text-4xl font-bold text-white">
-          Personal Tasks
+        <div className="flex items-center gap-2 mb-1">
+          <span className="w-2 h-2 rounded-full bg-gold-400" />
+          <span className="text-[10px] font-mono font-bold tracking-widest text-gold-400 uppercase">
+            // OPERATIONAL DIRECTIVES
+          </span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-display font-black text-parchment-50 uppercase tracking-wide">
+          TACTICAL STUDY TASKS
         </h1>
-
-        <p className="text-gray-400 mt-2">
-          Stay organized with your daily work and deadlines.
+        <p className="text-xs sm:text-sm font-tactical text-parchment-300 mt-1">
+          Track syllabus targets, editorial reading, CSAT practice, and mock test deadlines.
         </p>
       </div>
 
-      <button
+      <Button
         onClick={onNewTask}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold transition"
+        icon={FiPlus}
+        className={showForm ? "btn-secondary" : "btn-primary"}
       >
-        + New Task
-      </button>
-
+        {showForm ? "ABORT / CLOSE FORM" : "+ NEW TASK DIRECTIVE"}
+      </Button>
     </div>
   );
-}   
+}

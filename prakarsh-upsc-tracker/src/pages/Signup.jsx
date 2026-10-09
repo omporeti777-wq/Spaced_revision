@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import { isSupabaseAuthReady } from "../auth/supabase";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -19,6 +20,13 @@ export default function Signup() {
 
     setError("");
     setMessage("");
+
+    if (!isSupabaseAuthReady) {
+      setError(
+        "Supabase credentials are not configured yet. Please add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to your environment variables."
+      );
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError("Passwords do not match.");

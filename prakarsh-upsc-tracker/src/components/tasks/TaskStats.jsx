@@ -1,39 +1,47 @@
+import { FiLayers, FiClock, FiCheckSquare, FiAlertTriangle } from "react-icons/fi";
+import StatCard from "../dashboard/StatCard";
 import { getTaskStatus } from "../../utils/taskStatus";
-export default function TaskStats({ tasks }) {
+
+export default function TaskStats({ tasks = [] }) {
   const total = tasks.length;
-const completed = tasks.filter(
-  (task) => getTaskStatus(task) === "completed"
-).length;
-
-const pending = tasks.filter(
-  (task) => getTaskStatus(task) === "pending"
-).length;
-
-const overdue = tasks.filter(
-  (task) => getTaskStatus(task) === "overdue"
-).length;
-
-  const cards = [
-    { title: "Total", value: total },
-    { title: "Pending", value: pending },
-    { title: "Completed", value: completed },
-    { title: "Overdue", value: overdue },
-  ];
+  const completed = tasks.filter((t) => getTaskStatus(t) === "completed").length;
+  const pending = tasks.filter((t) => getTaskStatus(t) === "pending").length;
+  const overdue = tasks.filter((t) => getTaskStatus(t) === "overdue").length;
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      {cards.map((card) => (
-        <div
-          key={card.title}
-          className="rounded-2xl border border-ink-600 bg-ink-800 p-5"
-        >
-          <p className="text-sm text-gray-400">{card.title}</p>
-
-          <h2 className="text-3xl font-bold mt-2 text-white">
-            {card.value}
-          </h2>
-        </div>
-      ))}
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fadeUp">
+      <StatCard
+        label="Total Tasks"
+        value={total}
+        icon={FiLayers}
+        tone="neutral"
+        sub="All active & completed"
+        delay={0}
+      />
+      <StatCard
+        label="Pending"
+        value={pending}
+        icon={FiClock}
+        tone="gold"
+        sub="In progress"
+        delay={40}
+      />
+      <StatCard
+        label="Completed"
+        value={completed}
+        icon={FiCheckSquare}
+        tone="teal"
+        sub={total > 0 ? `${Math.round((completed / total) * 100)}% completion rate` : "No tasks yet"}
+        delay={80}
+      />
+      <StatCard
+        label="Overdue"
+        value={overdue}
+        icon={FiAlertTriangle}
+        tone={overdue > 0 ? "rust" : "neutral"}
+        sub={overdue > 0 ? "Needs immediate action" : "All deadlines met"}
+        delay={120}
+      />
     </div>
   );
 }

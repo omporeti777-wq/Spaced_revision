@@ -110,6 +110,9 @@ const [settings, setSettings] = useState(() =>
     habitRepository.saveHabits(habits);
   }, [habits]);
   useEffect(() => {
+    writeStorage(STORAGE_KEYS.personalTasks, personalTasks);
+  }, [personalTasks]);
+  useEffect(() => {
     const habitRepository = createLocalHabitRepository({
       read: readStorage,
       write: writeStorage,
@@ -326,7 +329,16 @@ const deletePersonalTask = useCallback((taskId) => {
 
 const togglePersonalTask = useCallback((taskId) => {
   setPersonalTasks((prev) =>
-    prev.filter((task) => task.id !== taskId)
+    prev.map((task) =>
+      task.id === taskId
+        ? {
+            ...task,
+            completed: !task.completed,
+            completedAt: !task.completed ? dayjs().toISOString() : null,
+            updatedAt: dayjs().toISOString(),
+          }
+        : task
+    )
   );
 }, []);
   const replaceAllData = useCallback((snapshot) => {
@@ -483,6 +495,7 @@ return () => {
   [
     lectures,
     liveTasks,
+    tasks,
     personalTasks,
     settings,
     streaks,
@@ -515,11 +528,9 @@ return () => {
 
     replaceAllData,
   ]
-    
-    [lectures, liveTasks, settings, streaks, subjects, addLecture, deleteLecture, toggleTask, updateSettings, addSubject, updateSubject, deleteSubject, reorderSubjects, habits, habitLogs, habitAnalytics, addHabit, updateHabit, deleteHabit, reorderHabits, toggleHabitLog]
-  );
+);
 
-  return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
+return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }
 
 export function useData() {

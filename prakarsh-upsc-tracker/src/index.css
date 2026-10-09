@@ -10,104 +10,162 @@
     color-scheme: dark;
   }
   body {
-    @apply bg-ink-900 text-parchment-100 font-body antialiased;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    @apply bg-ink-950 text-parchment-100 font-body antialiased;
+    background-image: 
+      radial-gradient(rgba(255, 145, 0, 0.03) 1px, transparent 0),
+      linear-gradient(to bottom, rgba(11, 14, 18, 0.95), rgba(6, 8, 10, 0.98));
+    background-size: 24px 24px, 100% 100%;
+    background-attachment: fixed;
+    letter-spacing: 0.025em;
   }
   ::selection {
-    @apply bg-gold-500/30 text-parchment-50;
+    @apply bg-gold-500 text-ink-950;
   }
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 6px;
+    height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: transparent;
+    background: #0B0E12;
   }
   ::-webkit-scrollbar-thumb {
-    background: #2A3236;
-    border-radius: 999px;
+    background: #263342;
+    border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #3A4449;
+    background: #FF9100;
   }
-  h1, h2, h3 {
-    @apply font-display;
+  h1, h2, h3, h4 {
+    @apply font-display tracking-wider uppercase;
   }
   :focus-visible {
-    outline: 2px solid #D4A657;
+    outline: 2px solid #FF9100;
     outline-offset: 2px;
   }
 }
 
 @layer components {
+  /* Tactical HUD Card */
   .card {
-    @apply bg-ink-800 border border-ink-600 rounded-xl2 shadow-card;
+    @apply bg-ink-800/90 border border-ink-600 rounded-lg shadow-card relative backdrop-blur-sm;
   }
   .card-hover {
-    @apply transition-all duration-300 hover:border-ink-500 hover:-translate-y-0.5;
+    @apply transition-all duration-200 hover:border-gold-500/80 hover:shadow-glow;
   }
+  
+  /* Tactical HUD Bracket */
+  .hud-bracket {
+    position: relative;
+  }
+  .hud-bracket::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 8px;
+    height: 8px;
+    border-top: 2px solid #FF9100;
+    border-left: 2px solid #FF9100;
+    pointer-events: none;
+  }
+  .hud-bracket::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 8px;
+    height: 8px;
+    border-bottom: 2px solid #FF9100;
+    border-right: 2px solid #FF9100;
+    pointer-events: none;
+  }
+
+  /* Tactical Military Buttons */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-medium text-sm transition-all duration-200 active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none;
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 font-display font-bold text-sm tracking-wider uppercase transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none;
   }
   .btn-primary {
     @apply btn bg-gold-500 text-ink-950 hover:bg-gold-400 shadow-glow;
   }
+  .btn-cyan {
+    @apply btn bg-teal-500 text-ink-950 hover:bg-teal-400 shadow-glowCyan;
+  }
   .btn-secondary {
-    @apply btn bg-ink-700 text-parchment-100 border border-ink-600 hover:bg-ink-600;
+    @apply btn bg-ink-700 text-parchment-100 border border-ink-600 hover:border-gold-500 hover:bg-ink-600;
   }
   .btn-ghost {
-    @apply btn bg-transparent text-parchment-300 hover:bg-ink-700 hover:text-parchment-100;
+    @apply btn bg-transparent text-parchment-300 hover:bg-ink-700 hover:text-parchment-50 border border-transparent hover:border-ink-600;
   }
+
+  /* Tactical Input Field */
   .input-field {
-    @apply w-full bg-ink-900 border border-ink-600 rounded-lg px-3.5 py-2.5 text-sm text-parchment-100 placeholder:text-ink-400 focus:border-gold-600 focus:ring-1 focus:ring-gold-600/40 transition-colors outline-none;
+    @apply w-full bg-ink-900 border border-ink-600 rounded-md px-3.5 py-2.5 text-sm font-tactical text-parchment-100 placeholder:text-ink-400 focus:border-gold-500 focus:ring-1 focus:ring-gold-500/50 transition-colors outline-none;
   }
   .label-text {
-    @apply block text-xs font-medium text-parchment-500 mb-1.5 tracking-wide uppercase;
+    @apply block text-xs font-display font-bold text-parchment-300 mb-1.5 tracking-wider uppercase;
   }
+
+  /* HUD Stencil Tag */
+  .hud-tag {
+    @apply inline-flex items-center gap-1 font-mono text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded border;
+  }
+
   .skeleton {
-    @apply bg-ink-700 rounded-lg relative overflow-hidden;
-    background-image: linear-gradient(90deg, rgba(255,255,255,0) 0, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0) 80px);
+    @apply bg-ink-700 rounded relative overflow-hidden;
+    background-image: linear-gradient(90deg, rgba(255,255,255,0) 0, rgba(255, 145, 0, 0.08) 40px, rgba(255,255,255,0) 80px);
     background-size: 500px 100%;
     @apply animate-shimmer;
   }
 }
 
+/* FullCalendar Call of Duty Tactical Styling */
 .fc {
-  --fc-border-color: #2A3236;
+  --fc-border-color: #263342;
   --fc-page-bg-color: transparent;
-  --fc-neutral-bg-color: #171D21;
-  --fc-today-bg-color: rgba(212,166,87,0.08);
+  --fc-neutral-bg-color: #12171F;
+  --fc-today-bg-color: rgba(255, 145, 0, 0.08);
   font-family: inherit;
 }
 .fc .fc-toolbar-title {
-  font-family: 'Fraunces', serif;
-  font-size: 1.35rem;
-  color: #ECE8DE;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.25rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #FFFFFF;
 }
 .fc .fc-button {
-  background: #1E262B !important;
-  border: 1px solid #2A3236 !important;
-  color: #ECE8DE !important;
+  background: #1A222C !important;
+  border: 1px solid #263342 !important;
+  color: #F1F5F9 !important;
   box-shadow: none !important;
-  text-transform: capitalize;
+  font-family: 'Chakra Petch', sans-serif !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border-radius: 4px !important;
 }
 .fc .fc-button:hover {
-  background: #2A3236 !important;
+  background: #263342 !important;
+  border-color: #FF9100 !important;
 }
 .fc .fc-button-active {
-  background: #D4A657 !important;
-  color: #0F1417 !important;
+  background: #FF9100 !important;
+  color: #06080A !important;
+  border-color: #FF9100 !important;
 }
 .fc .fc-daygrid-day-number {
-  color: #C9C4B6;
+  color: #CBD5E1;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 0.8rem;
   padding: 6px;
 }
 .fc .fc-col-header-cell-cushion {
-  color: #8B9296;
-  font-size: 0.7rem;
+  color: #7F94A6;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   padding: 8px;
 }
 .fc-daygrid-day-frame {
@@ -115,7 +173,7 @@
   transition: background 0.15s ease;
 }
 .fc-daygrid-day-frame:hover {
-  background: rgba(255,255,255,0.02);
+  background: rgba(255, 145, 0, 0.04);
 }
 .fc-event {
   border: none !important;
