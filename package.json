@@ -1,7 +1,9 @@
 {
-  "dependencies": {
-    "@supabase/supabase-js": "^2.111.0",
-    "firebase": "^12.16.0",
-    "lucide-react": "^1.27.0"
+  "name": "spaced-revision",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix prakarsh-upsc-tracker run dev",
+    "build": "npm --prefix prakarsh-upsc-tracker run build",
+    "preview": "npm --prefix prakarsh-upsc-tracker run preview"
   }
 }

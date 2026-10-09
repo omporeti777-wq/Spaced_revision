@@ -13,8 +13,9 @@ import {
   FiX,
   FiZap,
   FiFilter,
-  FiHeart,
   FiSearch,
+  FiEye,
+  FiMaximize2,
 } from "react-icons/fi";
 import { useData } from "../context/DataContext";
 import Card from "../components/ui/Card";
@@ -44,6 +45,7 @@ export default function Diary() {
 
   const [isComposing, setIsComposing] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [readingEntry, setReadingEntry] = useState(null); // Full reader modal state
   const [selectedMoodFilter, setSelectedMoodFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -77,6 +79,7 @@ export default function Diary() {
     setDate(entry.date || dayjs().format("YYYY-MM-DD"));
     setSelectedTags(entry.tags || []);
     setIsComposing(true);
+    setReadingEntry(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -155,7 +158,7 @@ export default function Diary() {
               OPERATOR'S FIELD JOURNAL
             </h1>
             <p className="text-xs font-mono text-parchment-400">
-              No pressure to write daily. Whenever you are in the mood, jot down reflections, thoughts, or battle notes.
+              No daily pressure. Write when inspired, read logs anytime in full dossier view.
             </p>
           </div>
         </div>
@@ -183,7 +186,7 @@ export default function Diary() {
         </div>
       </div>
 
-      {/* Entry Composer Form (Expanded or collapsed) */}
+      {/* Entry Composer Form */}
       {isComposing && (
         <Card className="p-6 border-gold-500/60 bg-ink-900/90 shadow-[0_0_20px_rgba(255,145,0,0.15)] relative animate-in fade-in duration-200">
           <div className="flex items-center justify-between pb-4 mb-5 border-b border-ink-600/80">
@@ -265,7 +268,7 @@ export default function Diary() {
                 placeholder="What went well today? What did you struggle with? Any thoughts on your journey, motivation, or syllabus topics? Feel free to write anything..."
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="w-full bg-ink-950 border border-ink-600 rounded-sm p-3.5 text-sm text-parchment-100 placeholder-parchment-600 focus:outline-none focus:border-gold-500 font-sans leading-relaxed resize-y"
+                className="w-full bg-ink-950 border border-ink-600 rounded-sm p-3.5 text-sm text-parchment-100 placeholder-parchment-600 focus:outline-none focus:border-gold-500 font-sans leading-relaxed resize-y break-all"
               />
             </div>
 
@@ -394,7 +397,7 @@ export default function Diary() {
         </div>
       </div>
 
-      {/* Diary Entries List */}
+      {/* Diary Entries Grid / Compact List */}
       {filteredEntries.length === 0 ? (
         <Card className="p-12 text-center border-dashed border-ink-600 bg-ink-900/50">
           <div className="w-14 h-14 mx-auto rounded-full bg-ink-800 border border-ink-600 text-parchment-500 flex items-center justify-center mb-4">
@@ -418,15 +421,17 @@ export default function Diary() {
           )}
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredEntries.map((entry) => {
             const moodObj = MOODS.find((m) => m.id === entry.mood) || MOODS[1];
+            const isLong = (entry.content || "").length > 180;
+
             return (
               <Card
                 key={entry.id}
-                className="p-5 border-ink-600 bg-ink-900/80 hover:border-gold-500/50 transition-all group flex flex-col justify-between shadow-tactical"
+                className="p-5 border-ink-600 bg-ink-900/80 hover:border-gold-500/50 transition-all group flex flex-col justify-between shadow-tactical overflow-hidden"
               >
-                <div>
+                <div className="min-w-0">
                   {/* Top Header of Card */}
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -450,22 +455,35 @@ export default function Diary() {
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-base font-display font-black text-parchment-100 tracking-wide uppercase mb-2 group-hover:text-gold-400 transition-colors">
+                  <h3 className="text-base font-display font-black text-parchment-100 tracking-wide uppercase mb-2 group-hover:text-gold-400 transition-colors truncate">
                     {entry.title}
                   </h3>
 
-                  {/* Content */}
-                  <p className="text-xs text-parchment-300 font-sans leading-relaxed whitespace-pre-wrap mb-4 bg-ink-950/60 p-3 rounded border border-ink-800">
-                    {entry.content}
-                  </p>
+                  {/* Clean Snippet Preview (Clamped & wrapping properly) */}
+                  <div className="relative mb-3 bg-ink-950/60 p-3 rounded border border-ink-800">
+                    <p className="text-xs text-parchment-300 font-sans leading-relaxed line-clamp-4 break-words whitespace-pre-wrap overflow-hidden">
+                      {entry.content}
+                    </p>
+
+                    {isLong && (
+                      <button
+                        type="button"
+                        onClick={() => setReadingEntry(entry)}
+                        className="mt-2 text-[11px] font-mono font-bold text-gold-400 hover:text-gold-300 flex items-center gap-1 transition"
+                      >
+                        <FiEye size={12} />
+                        <span>READ FULL LOG →</span>
+                      </button>
+                    )}
+                  </div>
 
                   {/* Tags */}
                   {entry.tags && entry.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mb-4">
+                    <div className="flex flex-wrap gap-1.5 mb-3">
                       {entry.tags.map((t, idx) => (
                         <span
                           key={idx}
-                          className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-sm bg-ink-800/80 border border-ink-700 text-parchment-400"
+                          className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-sm bg-ink-800/80 border border-ink-700 text-parchment-400 truncate max-w-[120px]"
                         >
                           #{t}
                         </span>
@@ -475,10 +493,15 @@ export default function Diary() {
                 </div>
 
                 {/* Footer Controls */}
-                <div className="flex items-center justify-between pt-3 border-t border-ink-800 text-xs font-mono">
-                  <span className="text-[10px] text-parchment-600">
-                    LOGGED AT: {dayjs(entry.createdAt).format("hh:mm A")}
-                  </span>
+                <div className="flex items-center justify-between pt-3 border-t border-ink-800 text-xs font-mono mt-2">
+                  <button
+                    onClick={() => setReadingEntry(entry)}
+                    className="text-[11px] text-parchment-400 hover:text-parchment-100 flex items-center gap-1 transition"
+                    title="View Full Log"
+                  >
+                    <FiMaximize2 size={12} className="text-gold-400" />
+                    <span>VIEW</span>
+                  </button>
 
                   <div className="flex items-center gap-2">
                     <button
@@ -504,6 +527,106 @@ export default function Diary() {
               </Card>
             );
           })}
+        </div>
+      )}
+
+      {/* FULL ENTRY READER / DOSSIER MODAL */}
+      {readingEntry && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink-950/85 backdrop-blur-sm animate-in fade-in duration-150">
+          <div
+            className="w-full max-w-2xl bg-ink-900 border-2 border-gold-500/80 rounded-sm shadow-[0_0_30px_rgba(255,145,0,0.25)] flex flex-col max-h-[85vh] overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="p-5 border-b border-ink-700 bg-ink-950/80 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5 min-w-0">
+                {(() => {
+                  const mObj = MOODS.find((m) => m.id === readingEntry.mood) || MOODS[1];
+                  return (
+                    <span className={`text-xs font-mono px-2 py-0.5 rounded-sm border flex items-center gap-1 font-bold ${mObj.color}`}>
+                      <span>{mObj.icon}</span>
+                      <span>{mObj.label}</span>
+                    </span>
+                  );
+                })()}
+
+                <span className="text-xs font-mono text-parchment-400">
+                  {dayjs(readingEntry.date).format("DD MMMM YYYY")}
+                </span>
+
+                {readingEntry.studyHours && (
+                  <span className="text-[11px] font-mono px-2 py-0.5 rounded-sm bg-ink-800 text-cyan-400 border border-cyan-500/30 flex items-center gap-1">
+                    <FiClock size={11} />
+                    {readingEntry.studyHours}
+                  </span>
+                )}
+              </div>
+
+              <button
+                onClick={() => setReadingEntry(null)}
+                className="p-1.5 text-parchment-400 hover:text-parchment-100 hover:bg-ink-800 rounded transition"
+                title="Close viewer"
+              >
+                <FiX size={20} />
+              </button>
+            </div>
+
+            {/* Modal Scrollable Body */}
+            <div className="p-6 overflow-y-auto space-y-4">
+              <div>
+                <span className="text-[10px] font-mono text-gold-400 tracking-widest uppercase block mb-1">
+                  // DECLASSIFIED DOSSIER LOG
+                </span>
+                <h2 className="text-2xl font-display font-black text-parchment-50 uppercase tracking-wide break-words">
+                  {readingEntry.title}
+                </h2>
+              </div>
+
+              {/* Tags in Modal */}
+              {readingEntry.tags && readingEntry.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {readingEntry.tags.map((t, idx) => (
+                    <span
+                      key={idx}
+                      className="text-[10px] font-mono uppercase px-2.5 py-1 rounded-sm bg-ink-800 border border-ink-700 text-parchment-300"
+                    >
+                      #{t}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Full Content with clean word-break */}
+              <div className="bg-ink-950/80 p-5 rounded border border-ink-800 text-parchment-100 font-sans text-sm leading-relaxed whitespace-pre-wrap break-words">
+                {readingEntry.content}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-ink-700 bg-ink-950/60 flex items-center justify-between">
+              <span className="text-xs font-mono text-parchment-500">
+                RECORDED: {dayjs(readingEntry.createdAt).format("DD MMM YYYY, hh:mm A")}
+              </span>
+
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="secondary"
+                  onClick={() => handleStartEdit(readingEntry)}
+                  className="flex items-center gap-1.5 text-xs"
+                >
+                  <FiEdit2 size={13} />
+                  <span>EDIT ENTRY</span>
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => setReadingEntry(null)}
+                  className="text-xs px-5"
+                >
+                  DONE
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

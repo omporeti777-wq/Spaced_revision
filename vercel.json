@@ -1,0 +1,10 @@
+{
+  "buildCommand": "cd prakarsh-upsc-tracker && npm install && npm run build",
+  "outputDirectory": "prakarsh-upsc-tracker/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
