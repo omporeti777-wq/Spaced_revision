@@ -433,6 +433,43 @@ const deleteDiaryEntry = useCallback((entryId) => {
   ...(snapshot.settings || {}),
 });
 }, []);
+
+  const clearAllData = useCallback(async () => {
+    // 1. Reset in-memory state
+    setLectures([]);
+    setTasks([]);
+    setPersonalTasks([]);
+    setDiaryEntries([]);
+    setHabitLogs([]);
+    setSettings(DEFAULT_SETTINGS);
+
+    // 2. Clear localStorage keys
+    Object.values(STORAGE_KEYS).forEach((key) => {
+      localStorage.removeItem(key);
+    });
+
+    // 3. If signed into Supabase, wipe remote rows for this user
+    if (user?.id && accessToken) {
+      try {
+        await pushStudySnapshot({
+          accessToken,
+          userId: user.id,
+          snapshot: {
+            subjects: subjects, // Preserve custom subjects if configured, or can wipe
+            lectures: [],
+            tasks: [],
+            personalTasks: [],
+            diaryEntries: [],
+            habits: habits,
+            habitLogs: [],
+            settings: DEFAULT_SETTINGS,
+          },
+        });
+      } catch (err) {
+        console.error("Cloud purge error:", err);
+      }
+    }
+  }, [user, accessToken, subjects, habits]);
 useEffect(() => {
  
 
@@ -580,6 +617,7 @@ return () => {
     toggleHabitLog,
 
     replaceAllData,
+    clearAllData,
   }),
   [
     lectures,
@@ -622,6 +660,7 @@ return () => {
     toggleHabitLog,
 
     replaceAllData,
+    clearAllData,
   ]
 );
 
